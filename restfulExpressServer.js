@@ -38,7 +38,6 @@ app.get('/pets/:index', function(req, res) {
 
 app.post('/pets', function(req, res){
    let pet = req.body
-   console.log(pet);
    if (!pet || pet.name == ''){
       return res.sendStatus(400)
    } else {
@@ -54,6 +53,37 @@ app.post('/pets', function(req, res){
       res.send(pet)
    }
 })
+
+app.patch('/pets/1', function(req, res){
+   let pet = req.body
+   console.log('og req pet', pet);
+   if (!pet || pet.name == ''){
+      return res.sendStatus(400)
+   }
+   else if (pet.kind == undefined) {
+      fs.readFile(petsPath, 'utf8', function (err, data){
+         if (err) throw err;
+         let pData = JSON.parse(data)
+         let updatePet = pData[1]
+         updatePet.age = pet.age
+         fs.writeFile(petsPath, JSON.stringify(pData), function(err){
+            if (err) throw err;
+         })
+      })
+   }
+   else {
+      fs.readFile(petsPath, 'utf8', function (err, data){
+         if (err) throw err;
+         let pData = JSON.parse(data)
+         pData.splice(1, 0, pet)
+         fs.writeFile(petsPath, JSON.stringify(pData), function(err){
+            if (err) throw err;
+         })
+      })
+   res.send(pet)
+   }
+})
+
 
 
 app.use(function(req, res) {
