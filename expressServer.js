@@ -12,18 +12,22 @@ app.disable('x-powered-by');
 app.get('/pets', function(req, res, next) {
    fs.readFile(petsPath, 'utf8', function (err, data){
       if (err) throw err;
+
       res.send(JSON.parse(data))
    })
 })
+
 app.get('/pets/0', function(req, res, next) {
    fs.readFile(petsPath, 'utf8', function (err, data){
       if (err) throw err;
+
       res.send(JSON.parse(data)[0])
    })
 })
 app.get('/pets/1', function(req, res, next) {
    fs.readFile(petsPath, 'utf8', function (err, data){
       if (err) throw err;
+
       res.send(JSON.parse(data)[1])
    })
 })
