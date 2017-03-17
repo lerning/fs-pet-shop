@@ -22,7 +22,6 @@ app.get('/pets', function(req, res, next) {
    })
 })
 
-
 app.get('/pets/:index', function(req, res, next) {
   var index = Number.parseInt(req.params.index);
   fs.readFile(petsPath, 'utf8', function (err, data){
@@ -55,7 +54,6 @@ app.post('/pets', function(req, res, next){
 
 app.patch('/pets/1', function(req, res, next){
    let pet = req.body
-   console.log('og req pet', pet);
    if (!pet || pet.name == ''){
       return res.sendStatus(400)
    }
@@ -85,6 +83,28 @@ app.patch('/pets/1', function(req, res, next){
    res.send(pet)
    }
 })
+
+app.delete('/pets/1', function(req, res){
+   let pet = req.body
+   if (!pet || pet.name == ''){
+      return res.sendStatus(400)
+   } else {
+      fs.readFile(petsPath, 'utf8', function (err, data){
+         if (err) throw err;
+         let pData = JSON.parse(data)
+         pet = pData[1]
+         pData.splice(1, 1)
+         fs.writeFile(petsPath, JSON.stringify(pData), function(err){
+            if (err) throw err;
+            res.send(pet)
+         })
+      })
+   }
+})
+
+let tryout = function (){
+
+}
 
 app.use(function(req, res) {
   res.sendStatus(404);
