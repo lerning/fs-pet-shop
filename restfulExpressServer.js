@@ -15,7 +15,6 @@ app.use(morgan('short'));
 
 app.disable('x-powered-by');
 
-
 app.get('/pets', function(req, res, next) {
    fs.readFile(petsPath, 'utf8', function (err, data){
       if (err) throw err;
@@ -24,7 +23,7 @@ app.get('/pets', function(req, res, next) {
 })
 
 
-app.get('/pets/:index', function(req, res) {
+app.get('/pets/:index', function(req, res, next) {
   var index = Number.parseInt(req.params.index);
   fs.readFile(petsPath, 'utf8', function (err, data){
      if (err) throw err;
@@ -36,7 +35,7 @@ app.get('/pets/:index', function(req, res) {
    })
 });
 
-app.post('/pets', function(req, res){
+app.post('/pets', function(req, res, next){
    let pet = req.body
    if (!pet || pet.name == ''){
       return res.sendStatus(400)
@@ -54,7 +53,7 @@ app.post('/pets', function(req, res){
    }
 })
 
-app.patch('/pets/1', function(req, res){
+app.patch('/pets/1', function(req, res, next){
    let pet = req.body
    console.log('og req pet', pet);
    if (!pet || pet.name == ''){
@@ -66,6 +65,9 @@ app.patch('/pets/1', function(req, res){
          let pData = JSON.parse(data)
          let updatePet = pData[1]
          updatePet.age = pet.age
+         pet = pData[1]
+         res.send(pet)
+         //wow ^this was anoyying DAM YOU ASYNCHRONICITY!!
          fs.writeFile(petsPath, JSON.stringify(pData), function(err){
             if (err) throw err;
          })
@@ -83,8 +85,6 @@ app.patch('/pets/1', function(req, res){
    res.send(pet)
    }
 })
-
-
 
 app.use(function(req, res) {
   res.sendStatus(404);
